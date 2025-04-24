@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-
+const inquirer = require('inquirer');
 const { Command } = require('commander');
 const program = new Command();
 const chalk = require('chalk');
@@ -94,24 +94,55 @@ async function main() {
       console.log();
     });
 
-  program
-    .command('clone <repo-url> [project-name]')
-    .description('从远程仓库拉取项目')
+    program
+    .command('clone [repo]')
+    .description('克隆仓库（支持完整URL或选择药帮忙/豆芽项目）')
     .option('-f, --force', '强制覆盖已存在的目录')
-    .option('-b, --branch <branch-name>', '指定要拉取的分支', 'main')
-    .option('-p, --package-manager <manager>', '指定包管理器 (npm, yarn, pnpm)', 'npm')
+    .option('-b, --branch <branch-name>', '指定分支', 'master')
+    .option('-p, --package-manager <manager>', '包管理器 (npm|yarn|pnpm)', 'npm')
     .option('-s, --skip-install', '跳过依赖安装')
-    .action((repoUrl, projectName, options) => {
-      require('../lib/clone')(repoUrl, projectName, options);
+    .action(async (repo, options) => {
+      try {
+        let repoUrl = repo;
+        
+        // 如果没有提供repo参数
+        if (!repoUrl) {
+          const answer = await inquirer.prompt([
+            {
+              type: 'list',
+              name: 'selectedRepo',
+              message: '请选择要克隆的项目',
+              choices: [
+                { name: '药帮忙', value: {url:'https://git.int.ybm100.com/ec/new-ybm-pc',projectName:"new-ybm-pc",nodeVersion:"16" }},
+                { name: '豆芽', value:  {url:'https://git.int.ybm100.com/ec/new-ybm-pc',projectName:"new-dy-pc",nodeVersion:"16" }}
+              ]
+            }
+          ]);
+          repo = answer.selectedRepo;
+        }
+  
+        const currentVersion = process.version; // 'v16.20.1'
+
+        // 提取主版本号（第二个数字）
+        const majorVersion = parseInt(currentVersion.split('.')[0].slice(1));
+        if(majorVersion!=repo.nodeVersion){
+          console.log(chalk.red(`当前Node版本为 ${currentVersion}，但 当前项目 仅支持 ${repo.nodeVersion} 版本。`));
+          return;
+        }
+        const projectName = options.name || repo.projectName;
+        require('../lib/clone')(repo.url, projectName, options);
+        
+      } catch (error) {
+        console.error('克隆失败:', error.message);
+        process.exit(1);
+      }
     })
     .on('--help', () => {
-      console.log();
-      console.log('示例:');
-      console.log(`  $ ybm clone https://github.com/username/repo my-project`);
-      console.log(`  $ ybm clone https://github.com/username/repo --branch develop`);
-      console.log(`  $ ybm clone https://github.com/username/repo --force`);
-      console.log(`  $ ybm clone https://github.com/username/repo --package-manager yarn`);
-      console.log();
+      console.log('\n示例:');
+      console.log('  $ ybm clone https://git.int.ybm100.com/ec/new-ybm-pc');
+      console.log('  $ ybm clone new-ybm-pc');
+      console.log('  $ ybm clone');
+      console.log('  $ ybm clone --branch develop');
     });
 
   program
