@@ -27,16 +27,16 @@
     "generator",
     "project-generator"
   ],
-  "author": "您的名字 <您的邮箱@example.com> (https://您的网站.com)",
+  "author": "luoleyan <您的邮箱@example.com> (https://github.com/luoleyan)",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/reallyGoodBaker/REM"
+    "url": "git+https://github.com/luoleyan/ybm-cli.git"
   },
   "bugs": {
-    "url": "https://github.com/luoleyan/FoolCards/issues"
+    "url": "https://github.com/luoleyan/ybm-cli/issues"
   },
-  "homepage": "https://github.com/luoleyan/FoolCards",
+  "homepage": "https://github.com/luoleyan/ybm-cli#readme",
   "dependencies": {
     "chalk": "^4.0.0",
     "commander": "^13.1.0",

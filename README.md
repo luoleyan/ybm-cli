@@ -2,6 +2,10 @@
 
 一个简单易用的前端项目脚手架工具。
 
+[![npm version](https://img.shields.io/npm/v/ybm-cli.svg?style=flat)](https://www.npmjs.com/package/ybm-cli)
+[![npm downloads](https://img.shields.io/npm/dm/ybm-cli.svg?style=flat)](https://www.npmjs.com/package/ybm-cli)
+[![license](https://img.shields.io/npm/l/ybm-cli.svg)](https://www.npmjs.com/package/ybm-cli)
+
 ## 功能特点
 
 - 快速创建前端项目
@@ -35,7 +39,12 @@ npm install -g ybm-cli
 
 # 或者使用yarn
 yarn global add ybm-cli
+
+# 或者使用pnpm
+pnpm add -g ybm-cli
 ```
+
+[![NPM](https://nodei.co/npm/ybm-cli.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/ybm-cli)
 
 ## 使用方法
 
