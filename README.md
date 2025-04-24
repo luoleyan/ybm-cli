@@ -5,6 +5,7 @@
 [![npm version](https://img.shields.io/npm/v/ybm-cli.svg?style=flat)](https://www.npmjs.com/package/ybm-cli)
 [![npm downloads](https://img.shields.io/npm/dm/ybm-cli.svg?style=flat)](https://www.npmjs.com/package/ybm-cli)
 [![license](https://img.shields.io/npm/l/ybm-cli.svg)](https://www.npmjs.com/package/ybm-cli)
+[![GitHub](https://img.shields.io/github/stars/luoleyan/ybm-cli?style=social)](https://github.com/luoleyan/ybm-cli)
 
 ## 功能特点
 
@@ -45,6 +46,18 @@ pnpm add -g ybm-cli
 ```
 
 [![NPM](https://nodei.co/npm/ybm-cli.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/ybm-cli)
+
+## 快速开始
+
+```bash
+# 全局安装
+npm install -g ybm-cli
+
+# 创建新项目
+ybm create my-project
+
+# 按照提示选择项目模板和配置
+```
 
 ## 使用方法
 
@@ -165,7 +178,7 @@ ybm completion uninstall
 
 ```bash
 # 克隆仓库
-git clone https://github.com/您的用户名/ybm-cli.git
+git clone https://github.com/luoleyan/ybm-cli.git
 cd ybm-cli
 
 # 安装依赖
@@ -200,6 +213,12 @@ npm link
 欢迎提交问题和拉取请求！请查看 [CONTRIBUTING.md](CONTRIBUTING.md) 了解更多信息。
 
 ## 版本历史
+
+### 最新版本 v1.0.2 (2024-05-30)
+
+- 修复了package.json中的循环依赖问题
+- 更新了GitHub仓库链接
+- 改进了README.md文档，添加了npm包徽章
 
 查看 [CHANGELOG.md](CHANGELOG.md) 了解详细的变更历史。
 
