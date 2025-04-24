@@ -192,11 +192,19 @@ npm link
 
 ### 本地模板
 
+#### JavaScript模板
 - Vue 3 + Vite - 基于Vue 3和Vite的项目模板
 - Vue 2 + Webpack - 基于Vue 2和Webpack的项目模板
 - React - 基于React + Vite的项目模板
 - Svelte - 基于Svelte + Vite的项目模板
 - SolidJS - 基于SolidJS + Vite的项目模板
+
+#### TypeScript模板
+- Vue 3 + TypeScript + Vite - 基于Vue 3、TypeScript和Vite的项目模板
+- Vue 2 + TypeScript + Webpack - 基于Vue 2、TypeScript和Webpack的项目模板
+- React + TypeScript - 基于React、TypeScript和Vite的项目模板
+- Svelte + TypeScript - 基于Svelte、TypeScript和Vite的项目模板
+- SolidJS + TypeScript - 基于SolidJS、TypeScript和Vite的项目模板
 
 ### 远程模板
 
@@ -214,11 +222,13 @@ npm link
 
 ## 版本历史
 
-### 最新版本 v1.0.2 (2024-05-30)
+### 最新版本 v1.1.0 (2024-05-30)
 
-- 修复了package.json中的循环依赖问题
-- 更新了GitHub仓库链接
-- 改进了README.md文档，添加了npm包徽章
+- 为所有框架添加了TypeScript模板（Vue 3、Vue 2、React、Svelte、SolidJS）
+- 添加了TypeScript文件转换功能，支持将JavaScript项目转换为TypeScript项目
+- 改进了TypeScript类型声明，自动添加基本类型
+- 添加了TypeScript转换的单元测试
+- 改进了错误处理，提供更详细的错误信息和建议
 
 查看 [CHANGELOG.md](CHANGELOG.md) 了解详细的变更历史。
 

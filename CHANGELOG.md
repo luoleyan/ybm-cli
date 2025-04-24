@@ -5,6 +5,15 @@
 格式基于 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.0.0/)，
 并且本项目遵循 [语义化版本](https://semver.org/lang/zh-CN/)。
 
+## [1.1.0] - 2024-05-30
+
+### 新增
+- 为所有框架添加了TypeScript模板（Vue 3、Vue 2、React、Svelte、SolidJS）
+- 添加了TypeScript文件转换功能，支持将JavaScript项目转换为TypeScript项目
+- 改进了TypeScript类型声明，自动添加基本类型
+- 添加了TypeScript转换的单元测试
+- 改进了错误处理，提供更详细的错误信息和建议
+
 ## [1.0.6] - 2024-05-30
 
 ### 修复
