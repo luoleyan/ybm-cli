@@ -1,6 +1,6 @@
 {
   "name": "ybm-cli",
-  "version": "1.0.2",
+  "version": "1.0.6",
   "description": "一个简单易用的前端项目脚手架工具",
   "main": "bin/ybm.js",
   "bin": {
@@ -39,7 +39,7 @@
   "homepage": "https://github.com/luoleyan/ybm-cli#readme",
   "dependencies": {
     "chalk": "^4.0.0",
-    "commander": "^13.1.0",
+    "commander": "^10.0.1",
     "download-git-repo": "^3.0.2",
     "figlet": "^1.8.1",
     "fs-extra": "^11.3.0",

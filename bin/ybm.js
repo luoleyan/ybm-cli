@@ -17,14 +17,21 @@ logger.enableFileLogging(true);
 function checkNodeVersion() {
   const requiredVersion = require('../package.json').engines.node;
   if (process.version !== `v${requiredVersion}`) {
+    console.log(chalk.red('┌──────────────────────────────────────────────────────────────┐'));
+    console.log(chalk.red('│                      版本不兼容错误                          │'));
+    console.log(chalk.red('└──────────────────────────────────────────────────────────────┘'));
     console.log(chalk.red(
       `您当前的Node版本为 ${process.version}，但 ybm-cli 仅支持 ${requiredVersion} 版本。`
     ));
+    console.log(chalk.red(`由于依赖包的兼容性要求，必须使用精确的Node.js版本。`));
     console.log(chalk.red(`请按照以下步骤安装指定版本的Node.js：`));
     console.log(chalk.yellow(`1. 访问 https://nodejs.org/download/release/v${requiredVersion}/ 下载指定版本`));
     console.log(chalk.yellow(`2. 或者使用 nvm 管理Node版本：`));
     console.log(chalk.yellow(`   nvm install ${requiredVersion}`));
     console.log(chalk.yellow(`   nvm use ${requiredVersion}`));
+    console.log(chalk.red('┌──────────────────────────────────────────────────────────────┐'));
+    console.log(chalk.red('│ 注意: 使用其他版本的Node.js可能导致依赖安装失败或运行错误。 │'));
+    console.log(chalk.red('└──────────────────────────────────────────────────────────────┘'));
     process.exit(1);
   }
 }
