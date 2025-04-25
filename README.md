@@ -47,6 +47,13 @@ pnpm add -g ybm-cli
 
 [![NPM](https://nodei.co/npm/ybm-cli.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/ybm-cli)
 
+## 新版本特性 (v1.0.7)
+
+- **完整的TypeScript支持**：为所有框架添加了TypeScript模板
+- **自动TypeScript转换**：将JavaScript项目自动转换为TypeScript项目
+- **智能类型推断**：根据代码上下文添加基本类型声明
+- **框架特定优化**：为每个框架提供专门的TypeScript集成
+
 ## 快速开始
 
 ```bash
@@ -57,6 +64,11 @@ npm install -g ybm-cli
 ybm create my-project
 
 # 按照提示选择项目模板和配置
+```
+
+```bash
+# 创建TypeScript项目
+ybm create my-ts-project --template vue3-vite-ts
 ```
 
 ## 使用方法
@@ -114,16 +126,94 @@ ybm credentials remove
 
 ### create 命令可用选项
 
-- `--template, -t`: 指定项目模板（vue3-vite, vue2-webpack, react, svelte, solidjs）
+- `--template, -t`: 指定项目模板
+  - JavaScript模板: `vue3-vite`, `vue2-webpack`, `react`, `svelte`, `solidjs`
+  - TypeScript模板: `vue3-vite-ts`, `vue2-webpack-ts`, `react-ts`, `svelte-ts`, `solidjs-ts`
 - `--force, -f`: 强制覆盖已存在的目录
 - `--package-manager, -p`: 指定包管理器（npm, yarn, pnpm）
 - `--skip-install, -s`: 跳过依赖安装
+
+### 使用TypeScript
+
+YBM CLI 支持两种使用TypeScript的方式：
+
+1. **选择TypeScript模板**：直接选择带有TypeScript的项目模板
+
+   ```bash
+   ybm create my-ts-project --template vue3-vite-ts
+   ```
+
+2. **在创建项目时启用TypeScript**：在交互式提示中选择TypeScript
+
+   ```bash
+   ybm create my-project
+   # 在提示中选择"TypeScript"选项
+   ```
+
+当您选择启用TypeScript时，YBM CLI会：
+
+- 生成适当的TypeScript配置文件（tsconfig.json）
+- 将JavaScript文件转换为TypeScript文件
+- 添加基本的类型声明
+- 安装必要的TypeScript依赖
+
+#### TypeScript转换功能
+
+YBM CLI v1.0.7新增了强大的TypeScript转换功能，可以自动将JavaScript项目转换为TypeScript项目：
+
+- **自动文件转换**：将.js/.jsx文件自动转换为.ts/.tsx文件
+- **智能类型推断**：根据代码上下文添加基本类型声明
+- **框架适配**：
+  - Vue：添加defineComponent和PropType类型
+  - React：添加React.FC和事件类型
+  - Svelte：添加TypeScript支持到Svelte组件
+  - SolidJS：添加Component类型和信号类型
+
+示例转换：
+
+```javascript
+// 转换前 (JavaScript)
+function formatDate(date) {
+  return new Date(date).toLocaleDateString()
+}
+
+const Counter = (props) => {
+  const [count, setCount] = useState(0)
+
+  function handleClick(event) {
+    setCount(count + 1)
+  }
+
+  return <button onClick={handleClick}>Count: {count}</button>
+}
+```
+
+```typescript
+// 转换后 (TypeScript)
+function formatDate(date: any): string {
+  return new Date(date).toLocaleDateString()
+}
+
+const Counter: React.FC<{[key: string]: any}> = (props) => {
+  const [count, setCount] = useState<number>(0)
+
+  function handleClick(event: any): void {
+    setCount(count + 1)
+  }
+
+  return <button onClick={handleClick}>Count: {count}</button>
+}
+```
 
 ### 可选的开发工具和库
 
 创建项目时，您可以选择以下开发工具和库：
 
 - **TypeScript**: 添加TypeScript支持
+  - 自动生成tsconfig.json配置文件
+  - 将JavaScript文件转换为TypeScript文件
+  - 自动添加基本类型声明
+  - 支持Vue、React、Svelte和SolidJS的TypeScript集成
 - **代码规范工具**: 选择ESLint或其他代码规范工具
 - **代码格式化工具**: 选择Prettier或其他代码格式化工具
 - **测试框架**: 选择Jest、Vitest等测试框架
@@ -193,6 +283,7 @@ npm link
 ### 本地模板
 
 #### JavaScript模板
+
 - Vue 3 + Vite - 基于Vue 3和Vite的项目模板
 - Vue 2 + Webpack - 基于Vue 2和Webpack的项目模板
 - React - 基于React + Vite的项目模板
@@ -200,6 +291,7 @@ npm link
 - SolidJS - 基于SolidJS + Vite的项目模板
 
 #### TypeScript模板
+
 - Vue 3 + TypeScript + Vite - 基于Vue 3、TypeScript和Vite的项目模板
 - Vue 2 + TypeScript + Webpack - 基于Vue 2、TypeScript和Webpack的项目模板
 - React + TypeScript - 基于React、TypeScript和Vite的项目模板
@@ -208,11 +300,21 @@ npm link
 
 ### 远程模板
 
+#### 远程JavaScript模板
+
 - Vue3 + Vite - 基于Vue3和Vite的项目模板
 - React + Vite - 基于React和Vite的项目模板
 - Svelte + Vite - 基于Svelte和Vite的项目模板
 - SolidJS + Vite - 基于SolidJS和Vite的项目模板
 - Vue2 + Webpack - 基于Vue2和Webpack的项目模板
+
+#### 远程TypeScript模板
+
+- Vue3 + TypeScript + Vite - 基于Vue3、TypeScript和Vite的项目模板
+- React + TypeScript + Vite - 基于React、TypeScript和Vite的项目模板
+- Svelte + TypeScript + Vite - 基于Svelte、TypeScript和Vite的项目模板
+- SolidJS + TypeScript + Vite - 基于SolidJS、TypeScript和Vite的项目模板
+- Vue2 + TypeScript + Webpack - 基于Vue2、TypeScript和Webpack的项目模板
 
 使用 `ybm list` 命令可以查看所有可用的模板。
 
@@ -222,7 +324,7 @@ npm link
 
 ## 版本历史
 
-### 最新版本 v1.1.0 (2024-05-30)
+### 最新版本 v1.0.7 (2024-05-30)
 
 - 为所有框架添加了TypeScript模板（Vue 3、Vue 2、React、Svelte、SolidJS）
 - 添加了TypeScript文件转换功能，支持将JavaScript项目转换为TypeScript项目
