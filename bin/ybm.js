@@ -8,31 +8,29 @@ const logger = require('../lib/logger');
 const { checkForUpdates } = require('../lib/update-checker');
 
 const { version } = require('../package.json');
-
+const choices=[
+  { name: '药帮忙', value: {url:'https://git.int.ybm100.com/ec/new-ybm-pc',projectName:"new-ybm-pc",nodeVersion:"16.20.1" }},
+  { name: '豆芽', value:  {url:'https://git.int.ybm100.com/ec/new-dy-pc',projectName:"new-dy-pc",nodeVersion:"16.20.1" }}
+]
 // 初始化日志系统
 logger.init();
 logger.enableFileLogging(true);
 
 // 检查Node.js版本
 function checkNodeVersion() {
+  const semver = require('semver');
   const requiredVersion = require('../package.json').engines.node;
-  if (process.version !== `v${requiredVersion}`) {
-    console.log(chalk.red('┌──────────────────────────────────────────────────────────────┐'));
-    console.log(chalk.red('│                      版本不兼容错误                          │'));
-    console.log(chalk.red('└──────────────────────────────────────────────────────────────┘'));
-    console.log(chalk.red(
-      `您当前的Node版本为 ${process.version}，但 ybm-cli 仅支持 ${requiredVersion} 版本。`
+
+  // 只显示警告，不再强制退出
+  if (!semver.satisfies(process.version, requiredVersion)) {
+    console.log(chalk.yellow('┌──────────────────────────────────────────────────────────────┐'));
+    console.log(chalk.yellow('│                      版本兼容性警告                          │'));
+    console.log(chalk.yellow('└──────────────────────────────────────────────────────────────┘'));
+    console.log(chalk.yellow(
+      `您当前的Node版本为 ${process.version}，推荐的版本要求是 ${requiredVersion}。`
     ));
-    console.log(chalk.red(`由于依赖包的兼容性要求，必须使用精确的Node.js版本。`));
-    console.log(chalk.red(`请按照以下步骤安装指定版本的Node.js：`));
-    console.log(chalk.yellow(`1. 访问 https://nodejs.org/download/release/v${requiredVersion}/ 下载指定版本`));
-    console.log(chalk.yellow(`2. 或者使用 nvm 管理Node版本：`));
-    console.log(chalk.yellow(`   nvm install ${requiredVersion}`));
-    console.log(chalk.yellow(`   nvm use ${requiredVersion}`));
-    console.log(chalk.red('┌──────────────────────────────────────────────────────────────┐'));
-    console.log(chalk.red('│ 注意: 使用其他版本的Node.js可能导致依赖安装失败或运行错误。 │'));
-    console.log(chalk.red('└──────────────────────────────────────────────────────────────┘'));
-    process.exit(1);
+    console.log(chalk.yellow(`某些功能可能无法正常工作，建议使用兼容的Node.js版本。`));
+    console.log();
   }
 }
 
@@ -103,35 +101,37 @@ async function main() {
     .option('-s, --skip-install', '跳过依赖安装')
     .action(async (repo, options) => {
       try {
-        let repoUrl = repo;
-        
-        // 如果没有提供repo参数
-        if (!repoUrl) {
+         repo = {url:repo,projectName:"new-ybm-pc" };
+        if (!repo.url) {
           const answer = await inquirer.prompt([
             {
               type: 'list',
               name: 'selectedRepo',
               message: '请选择要克隆的项目',
-              choices: [
-                { name: '药帮忙', value: {url:'https://git.int.ybm100.com/ec/new-ybm-pc',projectName:"new-ybm-pc",nodeVersion:"16" }},
-                { name: '豆芽', value:  {url:'https://git.int.ybm100.com/ec/new-ybm-pc',projectName:"new-dy-pc",nodeVersion:"16" }}
-              ]
+              choices:choices
             }
           ]);
           repo = answer.selectedRepo;
+          const currentVersion = process.version;
+          if(currentVersion!=repo.nodeVersion){
+            console.log(chalk.yellow(`警告: 当前Node版本为 ${currentVersion}，推荐的版本是 ${repo.nodeVersion}。`));
+            console.log(chalk.yellow(`某些功能可能无法正常工作，但将继续执行操作。`));
+          }
         }
-  
-        const currentVersion = process.version; // 'v16.20.1'
-
-        // 提取主版本号（第二个数字）
-        const majorVersion = parseInt(currentVersion.split('.')[0].slice(1));
-        if(majorVersion!=repo.nodeVersion){
-          console.log(chalk.red(`当前Node版本为 ${currentVersion}，但 当前项目 仅支持 ${repo.nodeVersion} 版本。`));
-          return;
-        }
+        // 检查版本并显示警告，但不阻止操作
+        choices.some(item => {
+          if (item.value.url === repo.url) {
+            const currentVersion = process.version;
+            if (currentVersion != item.value.nodeVersion) {
+              console.log(chalk.yellow(`警告: 当前Node版本为 ${currentVersion}，推荐的版本是 ${item.value.nodeVersion}。`));
+              console.log(chalk.yellow(`某些功能可能无法正常工作，但将继续执行操作。`));
+            }
+          }
+          return false;
+        });
         const projectName = options.name || repo.projectName;
         require('../lib/clone')(repo.url, projectName, options);
-        
+
       } catch (error) {
         console.error('克隆失败:', error.message);
         process.exit(1);
