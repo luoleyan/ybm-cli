@@ -10,7 +10,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "svelte-navigator": "^3.2.2"
+    "svelte-navigator": "^3.2.2",
+    "svelte-template": "file:"
   },
   "devDependencies": {
     "@sveltejs/vite-plugin-svelte": "^2.4.2",

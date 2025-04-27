@@ -6,12 +6,9 @@ const chalk = require('chalk');
 const figlet = require('figlet');
 const logger = require('../lib/logger');
 const { checkForUpdates } = require('../lib/update-checker');
+const repoConfig = require('../lib/config/repo-config');
 
 const { version } = require('../package.json');
-const choices=[
-  { name: '药帮忙', value: {url:'https://git.int.ybm100.com/ec/new-ybm-pc',projectName:"new-ybm-pc",nodeVersion:"16.20.1" }},
-  { name: '豆芽', value:  {url:'https://git.int.ybm100.com/ec/new-dy-pc',projectName:"new-dy-pc",nodeVersion:"16.20.1" }}
-]
 // 初始化日志系统
 logger.init();
 logger.enableFileLogging(true);
@@ -99,37 +96,48 @@ async function main() {
     .option('-b, --branch <branch-name>', '指定分支', 'master')
     .option('-p, --package-manager <manager>', '包管理器 (npm|yarn|pnpm)', 'npm')
     .option('-s, --skip-install', '跳过依赖安装')
-    .action(async (repo, options) => {
+    .action(async (repoInput, options) => {
       try {
-         repo = {url:repo,projectName:"new-ybm-pc" };
-        if (!repo.url) {
+        let repo;
+
+        // 如果提供了仓库名称或URL
+        if (repoInput) {
+          // 尝试从配置中查找仓库
+          const foundRepo = repoConfig.getRepoByNameOrUrl(repoInput);
+          if (foundRepo) {
+            repo = foundRepo.value;
+          } else {
+            // 如果不是预定义的仓库，假设是URL
+            repo = {
+              url: repoInput,
+              projectName: options.name || repoInput.split('/').pop() || "project"
+            };
+          }
+        } else {
+          // 如果没有提供仓库，显示选择列表
           const answer = await inquirer.prompt([
             {
               type: 'list',
               name: 'selectedRepo',
               message: '请选择要克隆的项目',
-              choices:choices
+              choices: repoConfig.choices
             }
           ]);
           repo = answer.selectedRepo;
+        }
+
+        // 检查Node版本兼容性
+        if (repo.nodeVersion) {
           const currentVersion = process.version;
-          if(currentVersion!=repo.nodeVersion){
+          if (currentVersion != repo.nodeVersion) {
             console.log(chalk.yellow(`警告: 当前Node版本为 ${currentVersion}，推荐的版本是 ${repo.nodeVersion}。`));
             console.log(chalk.yellow(`某些功能可能无法正常工作，但将继续执行操作。`));
           }
         }
-        // 检查版本并显示警告，但不阻止操作
-        choices.some(item => {
-          if (item.value.url === repo.url) {
-            const currentVersion = process.version;
-            if (currentVersion != item.value.nodeVersion) {
-              console.log(chalk.yellow(`警告: 当前Node版本为 ${currentVersion}，推荐的版本是 ${item.value.nodeVersion}。`));
-              console.log(chalk.yellow(`某些功能可能无法正常工作，但将继续执行操作。`));
-            }
-          }
-          return false;
-        });
-        const projectName = options.name || repo.projectName;
+
+        // 设置项目名称和执行克隆
+        const projectName = options.name || repo.projectName || repo.url.split('/').pop().replace('.git', '');
+        console.log(chalk.blue(`克隆仓库: ${repo.url} 到目录: ${projectName}`));
         require('../lib/clone')(repo.url, projectName, options);
 
       } catch (error) {
@@ -138,8 +146,14 @@ async function main() {
       }
     })
     .on('--help', () => {
+      console.log('\n可用的预定义仓库:');
+      repoConfig.choices.forEach(repo => {
+        console.log(`  ${chalk.green(repo.name)} - ${repo.value.description || repo.value.url}`);
+      });
+
       console.log('\n示例:');
       console.log('  $ ybm clone https://git.int.ybm100.com/ec/new-ybm-pc');
+      console.log('  $ ybm clone 药帮忙');
       console.log('  $ ybm clone new-ybm-pc');
       console.log('  $ ybm clone');
       console.log('  $ ybm clone --branch develop');

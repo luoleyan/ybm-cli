@@ -47,12 +47,13 @@ pnpm add -g ybm-cli
 
 [![NPM](https://nodei.co/npm/ybm-cli.png?downloads=true&downloadRank=true&stars=true)](https://www.npmjs.com/package/ybm-cli)
 
-## 新版本特性 (v1.0.7)
+## 新版本特性 (v1.0.8)
 
-- **完整的TypeScript支持**：为所有框架添加了TypeScript模板
-- **自动TypeScript转换**：将JavaScript项目自动转换为TypeScript项目
-- **智能类型推断**：根据代码上下文添加基本类型声明
-- **框架特定优化**：为每个框架提供专门的TypeScript集成
+- **稳定性提升**：修复了多个影响用户体验的问题
+- **Git命令检查**：在执行git命令前确保git已安装
+- **网络错误重试**：添加了网络错误重试机制，提高依赖安装的成功率
+- **TypeScript模板优化**：修复了TypeScript模板中UI框架选项不显示的问题
+- **超时机制优化**：改进了项目创建过程中的超时处理，避免不必要的超时提示
 
 ## 快速开始
 
@@ -159,7 +160,7 @@ YBM CLI 支持两种使用TypeScript的方式：
 
 #### TypeScript转换功能
 
-YBM CLI v1.0.7新增了强大的TypeScript转换功能，可以自动将JavaScript项目转换为TypeScript项目：
+YBM CLI v1.0.8提供了强大的TypeScript转换功能，可以自动将JavaScript项目转换为TypeScript项目：
 
 - **自动文件转换**：将.js/.jsx文件自动转换为.ts/.tsx文件
 - **智能类型推断**：根据代码上下文添加基本类型声明
@@ -324,13 +325,15 @@ npm link
 
 ## 版本历史
 
-### 最新版本 v1.0.7 (2024-05-30)
+### 最新版本 v1.0.8 (2024-05-31)
 
-- 为所有框架添加了TypeScript模板（Vue 3、Vue 2、React、Svelte、SolidJS）
-- 添加了TypeScript文件转换功能，支持将JavaScript项目转换为TypeScript项目
-- 改进了TypeScript类型声明，自动添加基本类型
-- 添加了TypeScript转换的单元测试
-- 改进了错误处理，提供更详细的错误信息和建议
+- 修复了`ybm clone`命令中项目名称重复的问题
+- 添加了Git命令检查，在执行git命令前确保git已安装
+- 改进了仓库URL格式处理，确保URL格式正确
+- 优化了项目创建过程中的超时机制，避免不必要的超时提示
+- 修复了TypeScript模板中UI框架选项不显示的问题
+- 添加了网络错误重试机制，提高依赖安装的成功率
+- 改进了错误处理和用户提示，提供更友好的错误信息和解决方案
 
 查看 [CHANGELOG.md](CHANGELOG.md) 了解详细的变更历史。
 

@@ -1,6 +1,6 @@
 {
   "name": "ybm-cli",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "一个简单易用的前端项目脚手架工具",
   "main": "bin/ybm.js",
   "bin": {
@@ -45,6 +45,7 @@
     "fs-extra": "^11.3.0",
     "inquirer": "^8.2.6",
     "ora": "^5.4.1",
-    "semver": "^7.6.0"
+    "semver": "^7.6.0",
+    "ybm-cli": "file:"
   }
 }
