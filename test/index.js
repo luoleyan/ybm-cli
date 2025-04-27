@@ -120,12 +120,19 @@ function testList() {
 function testCreate() {
   console.log(chalk.yellow('\n测试创建项目命令...'));
 
+  // 清理之前的测试项目
+  if (fs.existsSync(TEST_PROJECT_DIR)) {
+    fs.removeSync(TEST_PROJECT_DIR);
+  }
+
   // 创建测试目录
   fs.ensureDirSync(TEST_DIR);
 
-  // 测试基本创建命令
+  // 测试基本创建命令，使用--yes参数跳过交互式提示
   const template = TEST_CONFIG.create.templates[0]; // 使用第一个模板进行测试
-  const createResult = runCommand(`ybm create ${TEST_PROJECT_NAME} --template ${template} --skip-install`, { cwd: TEST_DIR });
+  const createResult = runCommand(`ybm create ${TEST_PROJECT_NAME} --template ${template} --skip-install --yes`, {
+    cwd: TEST_DIR
+  });
 
   if (!createResult) return false;
 
@@ -151,9 +158,14 @@ function testTypeScript() {
     fs.removeSync(TEST_PROJECT_DIR);
   }
 
-  // 创建TypeScript项目
+  // 创建测试目录
+  fs.ensureDirSync(TEST_DIR);
+
+  // 创建TypeScript项目，使用--yes参数跳过交互式提示
   const tsTemplate = TEST_CONFIG.create.tsTemplates[0]; // 使用第一个TypeScript模板
-  const createResult = runCommand(`ybm create ${TEST_PROJECT_NAME} --template ${tsTemplate} --skip-install`, { cwd: TEST_DIR });
+  const createResult = runCommand(`ybm create ${TEST_PROJECT_NAME} --template ${tsTemplate} --skip-install --yes`, {
+    cwd: TEST_DIR
+  });
 
   if (!createResult) return false;
 
@@ -172,20 +184,34 @@ function testTypeScript() {
     return false;
   }
 
-  let hasTsFiles = false;
-  const files = fs.readdirSync(srcDir, { recursive: true });
-  for (const file of files) {
-    if (typeof file === 'string' && (file.endsWith('.ts') || file.endsWith('.tsx'))) {
-      hasTsFiles = true;
-      break;
-    }
-  }
+  // 递归查找所有文件
+  const getAllFiles = (dir) => {
+    const files = fs.readdirSync(dir, { withFileTypes: true });
+    let result = [];
 
-  if (!hasTsFiles) {
+    for (const file of files) {
+      const fullPath = path.join(dir, file.name);
+      if (file.isDirectory()) {
+        result = result.concat(getAllFiles(fullPath));
+      } else {
+        result.push(fullPath);
+      }
+    }
+
+    return result;
+  };
+
+  const allFiles = getAllFiles(srcDir);
+  const tsFiles = allFiles.filter(file => file.endsWith('.ts') || file.endsWith('.tsx'));
+
+  if (tsFiles.length === 0) {
     console.error(chalk.red('没有找到TypeScript文件'));
+    console.log(chalk.yellow('找到的文件:'));
+    allFiles.forEach(file => console.log(chalk.yellow(`- ${file}`)));
     return false;
   }
 
+  console.log(chalk.green(`找到${tsFiles.length}个TypeScript文件`));
   console.log(chalk.green('TypeScript支持测试通过'));
   return true;
 }
@@ -199,28 +225,38 @@ function testToolsConfig() {
     fs.removeSync(TEST_PROJECT_DIR);
   }
 
+  // 创建测试目录
+  fs.ensureDirSync(TEST_DIR);
+
   // 创建带有ESLint和Prettier的项目
   const template = TEST_CONFIG.create.templates[0];
 
-  // 使用交互式命令模拟用户输入
-  const input = Buffer.from(`${TEST_PROJECT_NAME}\nA test project\nTest User\ny\neslint-standard\nprettier\nnone\nnone\nnone\nn\n`);
-
-  const createResult = runCommand(`ybm create`, {
-    cwd: TEST_DIR,
-    interactive: true,
-    input: input
-  });
+  // 使用非交互式命令，直接指定所有选项，并添加--yes参数跳过交互式提示
+  const createResult = runCommand(
+    `ybm create ${TEST_PROJECT_NAME} --template ${template} --linter eslint-standard --formatter prettier --skip-install --yes`,
+    { cwd: TEST_DIR }
+  );
 
   if (!createResult) return false;
 
+  // 检查项目是否创建成功
+  const projectExists = checkFileExists(TEST_PROJECT_DIR);
+  if (!projectExists) {
+    console.error(chalk.red('项目目录不存在'));
+    return false;
+  }
+
   // 检查ESLint配置文件是否存在
   const eslintExists = checkFileExists(path.join(TEST_PROJECT_DIR, '.eslintrc.js'));
+  if (!eslintExists) {
+    console.error(chalk.red('ESLint配置文件不存在'));
+    return false;
+  }
 
   // 检查Prettier配置文件是否存在
   const prettierExists = checkFileExists(path.join(TEST_PROJECT_DIR, '.prettierrc'));
-
-  if (!eslintExists || !prettierExists) {
-    console.error(chalk.red('工具配置文件不存在'));
+  if (!prettierExists) {
+    console.error(chalk.red('Prettier配置文件不存在'));
     return false;
   }
 

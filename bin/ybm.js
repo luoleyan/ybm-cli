@@ -62,6 +62,9 @@ async function main() {
     .option('-t, --template <template>', '指定项目模板 (vue3-vite, vue2-webpack, react, svelte, solidjs)')
     .option('-p, --package-manager <manager>', '指定包管理器 (npm, yarn, pnpm)', 'npm')
     .option('-s, --skip-install', '跳过依赖安装')
+    .option('-y, --yes', '使用默认选项，跳过交互式提示')
+    .option('--linter <linter>', '指定代码规范工具 (eslint, eslint-airbnb, eslint-standard, none)')
+    .option('--formatter <formatter>', '指定代码格式化工具 (prettier, prettier-eslint, none)')
     .action((name, options) => {
       require('../lib/create')(name, options);
     })
