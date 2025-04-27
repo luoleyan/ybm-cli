@@ -133,6 +133,26 @@ ybm credentials remove
 - `--force, -f`: 强制覆盖已存在的目录
 - `--package-manager, -p`: 指定包管理器（npm, yarn, pnpm）
 - `--skip-install, -s`: 跳过依赖安装
+- `--yes, -y`: 使用默认选项，跳过交互式提示
+- `--linter`: 指定代码规范工具（eslint, eslint-airbnb, eslint-standard, none）
+- `--formatter`: 指定代码格式化工具（prettier, prettier-eslint, none）
+
+### 非交互式使用
+
+YBM CLI 支持非交互式使用，通过`--yes`选项跳过所有交互式提示，使用默认选项或命令行指定的选项：
+
+```bash
+# 使用默认选项创建项目
+ybm create my-project --yes
+
+# 指定模板和工具
+ybm create my-project --template vue3-vite --linter eslint-standard --formatter prettier --yes
+
+# 创建TypeScript项目
+ybm create my-ts-project --template vue3-vite-ts --yes
+```
+
+这对于自动化脚本或CI/CD环境特别有用，可以避免交互式提示阻塞流程。
 
 ### 使用TypeScript
 
@@ -334,6 +354,9 @@ npm link
 - 修复了TypeScript模板中UI框架选项不显示的问题
 - 添加了网络错误重试机制，提高依赖安装的成功率
 - 改进了错误处理和用户提示，提供更友好的错误信息和解决方案
+- 添加了`--yes`选项，支持非交互式使用，方便自动化脚本和CI/CD环境
+- 添加了`--linter`和`--formatter`选项，支持在命令行中指定代码规范和格式化工具
+- 修复了工具配置测试失败的问题，提高了测试稳定性
 
 查看 [CHANGELOG.md](CHANGELOG.md) 了解详细的变更历史。
 
